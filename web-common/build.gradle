@@ -1,0 +1,39 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '2.7.0'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'com.auth0:java-jwt:4.0.0'
+    api 'org.projectlombok:lombok'
+    annotationProcessor('org.projectlombok:lombok', "org.springframework.boot:spring-boot-configuration-processor")
+    api('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    api 'org.springframework.boot:spring-boot-starter-undertow'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    api 'com.baomidou:mybatis-plus-boot-starter:3.5.2'
+    api 'mysql:mysql-connector-java:8.0.29'
+    api 'org.springframework.boot:spring-boot-starter-data-redis'
+    api 'org.springframework.boot:spring-boot-starter-aop'
+    api 'cn.hutool:hutool-all:5.8.18'
+    // https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine
+    api 'com.github.ben-manes.caffeine:caffeine'
+    api 'org.springframework.boot:spring-boot-starter-validation:2.7.0'
+    // https://mvnrepository.com/artifact/javax.validation/validation-api
+    api 'javax.validation:validation-api:2.0.1.Final'
+}
+
+test {
+    useJUnitPlatform()
+}
