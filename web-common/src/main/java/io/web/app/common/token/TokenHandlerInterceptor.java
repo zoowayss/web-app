@@ -1,10 +1,9 @@
 package io.web.app.common.token;
 
-import io.web.app.common.service.UserService;
 import io.web.app.common.annotation.Role;
 import io.web.app.common.domain.enums.SysRoleEnum;
 import io.web.app.common.entity.UserEntity;
-import org.springframework.core.MethodParameter;
+import io.web.app.common.service.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -22,7 +21,6 @@ public class TokenHandlerInterceptor implements HandlerInterceptor {
 
     public String tokenHeaderName = "Authorization";
     private String unauthorizedPrompt = "{\"success\":false, \"code\":\"401\", \"msg\": \"Unauthorized\"}";
-    private boolean interceptByDefault = false;
 
     private TokenVerifier verifier;
 
@@ -39,50 +37,39 @@ public class TokenHandlerInterceptor implements HandlerInterceptor {
 
         if (handler instanceof HandlerMethod handlerMethod) {
 
-            boolean flag = interceptByDefault; // 是否默认校验token
-            if (!flag) {
-                for (MethodParameter methodParameter : handlerMethod.getMethodParameters()) {
-                    if (methodParameter.getParameterType().isAssignableFrom(TokenUser.class)) {
-                        flag = true;
-                        break;
-                    }
-                }
+            List<String> roles = new ArrayList<>();
+            Role annotation = handlerMethod.getMethodAnnotation(Role.class);
+            if (annotation != null) {
+                roles.addAll(Arrays.stream(annotation.value()).map(SysRoleEnum::getCode).toList());
             }
-            if (flag) {
-                String token = request.getHeader(tokenHeaderName);
-                String userId;
-                if ((token == null || (userId = verifier.verifyAndGetUserId(token)) == null)) {
-                    response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-                    response.getWriter().write(unauthorizedPrompt);
-                    return false;
-                }
-                UserEntity userEntity = userService.getById(userId);
+            annotation = handlerMethod.getBeanType().getAnnotation(Role.class);
+            if (annotation != null) {
+                roles.addAll(Arrays.stream(annotation.value()).map(SysRoleEnum::getCode).toList());
+            }
 
-                List<String> roles = new ArrayList<>();
-                Role annotation = handlerMethod.getMethodAnnotation(Role.class);
-                if (annotation != null) {
-                    roles.addAll(Arrays.stream(annotation.value()).map(SysRoleEnum::getCode).toList());
-                }
-                annotation = handlerMethod.getBeanType().getAnnotation(Role.class);
-                if (annotation != null) {
-                    roles.addAll(Arrays.stream(annotation.value()).map(SysRoleEnum::getCode).toList());
-                }
-                if (!CollectionUtils.isEmpty(roles)) {
-                    for (String role : roles) {
-                        if (userEntity.getRole().contains(role)) {
-                            request.setAttribute(ATTRIBUTE_UID, userId);
-                            return true;
-                        }
-                    }
-                    response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-                    response.getWriter().write(unauthorizedPrompt);
-                    return false;
-                }
-                request.setAttribute(ATTRIBUTE_UID, userId);
+            if (CollectionUtils.isEmpty(roles)) {
                 return true;
             }
-        }
-        return true;
+            String token = request.getHeader(tokenHeaderName);
+            String userId;
+            if ((token == null || (userId = verifier.verifyAndGetUserId(token)) == null)) {
+                response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+                response.getWriter().write(unauthorizedPrompt);
+                return false;
+            }
+            UserEntity userEntity = userService.getById(userId);
 
+            for (String role : roles) {
+                if (userEntity.getRole().contains(role)) {
+                    request.setAttribute(ATTRIBUTE_UID, userId);
+                    return true;
+                }
+            }
+            response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+            response.getWriter().write(unauthorizedPrompt);
+            return false;
+        }
+
+        return true;
     }
 }

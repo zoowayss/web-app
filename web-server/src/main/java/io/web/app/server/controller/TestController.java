@@ -2,7 +2,6 @@ package io.web.app.server.controller;
 
 import io.web.app.common.annotation.Role;
 import io.web.app.common.domain.enums.SysRoleEnum;
-import io.web.app.common.token.TokenUser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +17,7 @@ public class TestController {
 
 
     @GetMapping
-    public String ping(TokenUser user) {
+    public String ping() {
         return "pong";
     }
 }

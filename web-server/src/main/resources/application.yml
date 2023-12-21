@@ -8,6 +8,11 @@ spring:
     time-zone: GMT+8
 
   datasource:
-    url: jdbc:mysql://47.93.8.194:3306/zoowayss?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.0.103:3306/web-app?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
-    password: '032200'
+    password: rootmima
+
+
+api:
+  component:
+    items: webLog,webFrequency,webExecutor
