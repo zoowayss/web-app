@@ -22,7 +22,6 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     //使用mp实现修改操作,这个方法会执行
     @Override
     public void updateFill(MetaObject metaObject) {
-//        this.fillStrategy(metaObject, "createTime", new Date());
         this.setFieldValByName("updateTime", new Date(), metaObject);
     }
 
