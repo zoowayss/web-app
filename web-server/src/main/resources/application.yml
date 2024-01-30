@@ -8,7 +8,7 @@ spring:
     time-zone: GMT+8
 
   datasource:
-    url: jdbc:mysql://192.168.0.77:3306/web-app?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.0.74:3326/web-app?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
     password: rootmima
 
