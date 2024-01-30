@@ -1,6 +1,6 @@
 package io.web.app.server.controller.domain;
 
-import io.web.app.server.entity.Account;
+import io.web.app.server.entity.AccountEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateAccount {
-    public static final Set<Integer> SELECTABLE_STATUS = Set.of(Account.STATUS_LOCKED, Account.STATUS_NORMAL);
+    public static final Set<Integer> SELECTABLE_STATUS = Set.of(AccountEntity.STATUS_LOCKED, AccountEntity.STATUS_NORMAL);
     private String name;
 
     private String description;

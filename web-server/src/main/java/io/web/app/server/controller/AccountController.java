@@ -4,7 +4,7 @@ import io.web.app.common.domain.ApiResult;
 import io.web.app.common.exception.CommonErrorEnum;
 import io.web.app.common.utils.JsonUtils;
 import io.web.app.server.controller.domain.CreateAccount;
-import io.web.app.server.entity.Account;
+import io.web.app.server.entity.AccountEntity;
 import io.web.app.server.service.AccountService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -31,11 +31,11 @@ public class AccountController {
     @PostMapping
     public ApiResult<?> create(@RequestBody CreateAccount body) {
         if (body.getStatus() == null) {
-            body.setStatus(Account.STATUS_NORMAL);
+            body.setStatus(AccountEntity.STATUS_NORMAL);
         }
 
         if (!CreateAccount.SELECTABLE_STATUS.contains(body.getStatus())) {
-            return ApiResult.fail(CommonErrorEnum.PARAM_VALID.getCode(), String.format("status only support [%d,%d]", Account.STATUS_LOCKED, Account.STATUS_NORMAL));
+            return ApiResult.fail(CommonErrorEnum.PARAM_VALID.getCode(), String.format("status only support [%d,%d]", AccountEntity.STATUS_LOCKED, AccountEntity.STATUS_NORMAL));
         }
         if (!StringUtils.hasText(body.getAccount()) ||
                 !StringUtils.hasText(body.getPassword()) ||
@@ -43,13 +43,13 @@ public class AccountController {
                 !StringUtils.hasText(body.getDescription())) {
             return ApiResult.fail(CommonErrorEnum.PARAM_VALID.getCode(), JsonUtils.toStr(body));
         }
-        Account save = new Account();
+        AccountEntity save = new AccountEntity();
         BeanUtils.copyProperties(body, save);
         return ApiResult.success(accountService.save(save));
     }
 
 
-    @GetMapping
+    @GetMapping("/page")
     public ApiResult<?> page(Pageable pageable,String name,Integer status,String account) {
         Page resp = accountService.selectPage(pageable, name, status, account);
         return ApiResult.success(resp);
@@ -57,20 +57,20 @@ public class AccountController {
 
     @PutMapping("/{id}")
     public ApiResult<?> update(@PathVariable String id, String password, Integer status, String description) {
-        Account account = accountService.getById(id);
-        if (account == null) {
+        AccountEntity accountEntity = accountService.getById(id);
+        if (accountEntity == null) {
             return ApiResult.fail(CommonErrorEnum.PARAM_VALID.getCode(), String.format("account not exist, id=%s", id));
         }
         if (StringUtils.hasText(password)) {
-            account.setPassword(password);
+            accountEntity.setPassword(password);
         }
         if (status != null && CreateAccount.SELECTABLE_STATUS.contains(status)) {
-            account.setStatus(status);
+            accountEntity.setStatus(status);
         }
         if (StringUtils.hasText(description)) {
-            account.setDescription(description);
+            accountEntity.setDescription(description);
         }
-        return ApiResult.success(accountService.updateById(account));
+        return ApiResult.success(accountService.updateById(accountEntity));
     }
 
     @DeleteMapping("/{id}")

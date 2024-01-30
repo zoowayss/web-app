@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "t_account", autoResultMap = true)
-public class Account {
+public class AccountEntity {
 
     public static final int STATUS_LOCKED = 0;
     public static final int STATUS_NORMAL = 1;

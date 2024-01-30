@@ -11,4 +11,5 @@ public class Constants {
     public static final long TOKEN_EXPIRE_TIME = 1000l * 60l * 60l * 24l * 7l;
 
     public static final long ADMIN_TOKEN_EXPIRE_TIME = TOKEN_EXPIRE_TIME;
+    public static final String DEFAULT = "default";
 }
