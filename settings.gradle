@@ -1,4 +1,5 @@
 rootProject.name = 'zoowayss-web-app'
 include 'web-common'
 include 'web-server'
+include 'web-file'
 
