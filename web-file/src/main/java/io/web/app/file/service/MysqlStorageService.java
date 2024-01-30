@@ -18,7 +18,7 @@ public class MysqlStorageService extends ServiceImpl<FileDataMapper, FileDataEnt
         FileDataEntity fileDataEntity = new FileDataEntity();
         fileDataEntity.setId(id);
         fileDataEntity.setData(StreamUtils.copyToByteArray(inputStream));
-        fileDataEntity.setSize(fileDataEntity.getSize());
+        fileDataEntity.setSize((long) fileDataEntity.getData().length);
         save(fileDataEntity);
         return fileDataEntity.getData().length;
     }
